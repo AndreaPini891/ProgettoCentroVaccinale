@@ -6,73 +6,69 @@
 
 <AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="centrivaccinali.controllers.HomeController">
    <children>
-      <ListView fx:id="vaccineCenterList" layoutX="18.0" layoutY="190.0" prefHeight="392.0" prefWidth="269.0" />
       <Label layoutX="55.0" layoutY="14.0" text="Centri Vaccinali">
          <font>
             <Font size="25.0" />
          </font>
       </Label>
-      <Pane layoutX="299.0" layoutY="12.0" prefHeight="571.0" prefWidth="253.0" style="-fx-background-color: lightgrey;">
+      <Pane layoutX="20.0" layoutY="74.0" prefHeight="229.0" prefWidth="760.0" style="-fx-background-color: lightgrey;">
          <children>
-            <Label layoutX="11.0" layoutY="14.0" text="Informazioni Cittadino">
-               <font>
-                  <Font size="20.0" />
-               </font>
-            </Label>
-            <ListView fx:id="vaccinationList" layoutX="10.0" layoutY="357.0" prefHeight="203.0" prefWidth="233.0" />
-            <Label layoutX="14.0" layoutY="340.0" text="Vaccinazioni" />
-            <Label layoutX="14.0" layoutY="45.0" text="Nome: ">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Label>
+            <ListView fx:id="vaccinationList" layoutX="344.0" layoutY="33.0" prefHeight="141.0" prefWidth="386.0" />
+            <Label layoutX="504.0" layoutY="14.0" text="Vaccinazioni" />
             <Label fx:id="nameLabel" layoutX="64.0" layoutY="42.0" prefHeight="17.0" prefWidth="144.0" />
-            <Label layoutX="14.0" layoutY="62.0" text="Cognome:">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Label>
             <Label fx:id="surnameLabel" layoutX="88.0" layoutY="59.0" prefHeight="17.0" prefWidth="121.0" />
-            <Label layoutX="14.0" layoutY="79.0" text="Codice Fiscale:">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Label>
             <Label fx:id="cfLabel" layoutX="108.0" layoutY="76.0" prefHeight="17.0" prefWidth="97.0" />
-            <Label layoutX="10.0" layoutY="105.0" text="Informazioni Centro Vaccinale">
+            <Label fx:id="nameLabel2" layoutX="58.0" layoutY="135.0" prefHeight="17.0" prefWidth="150.0" />
+            <Label fx:id="typeLabel" layoutX="74.0" layoutY="152.0" prefHeight="17.0" prefWidth="150.0" />
+            <Label fx:id="addressLabel" layoutX="72.0" layoutY="168.0" prefHeight="17.0" prefWidth="150.0" />
+            <Button fx:id="RegButton" layoutX="504.0" layoutY="185.0" mnemonicParsing="false" text="Registrati" />
+            <Label layoutX="28.0" layoutY="121.0" text="Informazioni Centro Vaccinale">
                <font>
                   <Font size="18.0" />
                </font>
             </Label>
-            <Label layoutX="14.0" layoutY="135.0" prefHeight="17.0" prefWidth="41.0" text="Nome:">
+            <Label layoutX="32.0" layoutY="151.0" prefHeight="17.0" prefWidth="41.0" text="Nome:">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <Label layoutX="14.0" layoutY="152.0" prefHeight="17.0" prefWidth="66.0" text="Tipologia:">
+            <Label layoutX="32.0" layoutY="168.0" prefHeight="17.0" prefWidth="66.0" text="Tipologia:">
                <font>
                   <Font name="System Bold" size="12.0" />
-               </font></Label>
-            <Label layoutX="14.0" layoutY="168.0" prefHeight="17.0" prefWidth="58.0" text="Indirizzo:">
+               </font>
+            </Label>
+            <Label layoutX="32.0" layoutY="184.0" prefHeight="17.0" prefWidth="58.0" text="Indirizzo:">
                <font>
                   <Font name="System Bold" size="12.0" />
-               </font></Label>
-            <Label fx:id="nameLabel2" layoutX="58.0" layoutY="135.0" prefHeight="17.0" prefWidth="150.0" />
-            <Label fx:id="typeLabel" layoutX="74.0" layoutY="152.0" prefHeight="17.0" prefWidth="150.0" />
-            <Label fx:id="addressLabel" layoutX="72.0" layoutY="168.0" prefHeight="17.0" prefWidth="150.0" />
-            <Button fx:id="RegButton" layoutX="101.0" layoutY="242.0" mnemonicParsing="false" text="Registrati" />
+               </font>
+            </Label>
+            <Label layoutX="28.0" layoutY="27.0" text="Informazioni Cittadino">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label layoutX="31.0" layoutY="58.0" text="Nome: ">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <Label layoutX="31.0" layoutY="75.0" text="Cognome:">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
+            <Label layoutX="31.0" layoutY="92.0" text="Codice Fiscale:">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
          </children>
       </Pane>
-      <Pane layoutX="564.0" layoutY="60.0" prefHeight="523.0" prefWidth="221.0">
+      <Pane layoutX="20.0" layoutY="321.0" prefHeight="268.0" prefWidth="760.0">
          <children>
-            <Button fx:id="insertEvent" layoutX="62.0" layoutY="26.0" mnemonicParsing="false" text="Inserisci Evento" />
-            <ListView fx:id="eventsList" layoutY="71.0" prefHeight="452.0" prefWidth="221.0" />
+            <Button fx:id="insertEvent" layoutX="15.0" layoutY="14.0" mnemonicParsing="false" text="Inserisci Evento" />
+            <ListView fx:id="eventsList" layoutX="15.0" layoutY="55.0" prefHeight="180.0" prefWidth="714.0" />
          </children>
       </Pane>
-      <TextField fx:id="nameSearchText" layoutX="18.0" layoutY="76.0" prefHeight="30.0" prefWidth="269.0" />
-      <Label layoutX="18.0" layoutY="52.0" text="Ricerca per nome" />
-      <TextField fx:id="citySearchText" layoutX="117.0" layoutY="139.0" prefHeight="30.0" prefWidth="170.0" />
-      <Label layoutX="18.0" layoutY="115.0" prefHeight="17.0" prefWidth="170.0" text="Ricerca per comune e tipologia" />
-      <ChoiceBox fx:id="checkType" layoutX="18.0" layoutY="140.0" prefHeight="27.0" prefWidth="97.0" />
    </children>
 </AnchorPane>

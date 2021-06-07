@@ -39,7 +39,7 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <ChoiceBox fx:id="choiceBox" layoutX="300.0" layoutY="305.0" prefHeight="25.0" prefWidth="200.0" />
+      <ChoiceBox fx:id="checkType" layoutX="300.0" layoutY="305.0" prefHeight="25.0" prefWidth="200.0" />
       <Pane layoutX="194.0" layoutY="85.0" prefHeight="211.0" prefWidth="321.0" style="-fx-background-color: lightgrey;">
          <children>
             <Label layoutX="14.0" prefHeight="21.0" prefWidth="65.0" text="Indirizzo">

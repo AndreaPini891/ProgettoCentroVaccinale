@@ -8,9 +8,12 @@ package centrivaccinali.controllers;
 
 import centrivaccinali.web.ServerJSONHandler;
 import centrivaccinali.web.WebMethods;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import org.json.JSONArray;
@@ -28,7 +31,7 @@ public class RegisterController implements Initializable {
 
 
     /**
-     * Text field for entering name.
+     * Text field for entering the name of vaccination center.
      */
     @FXML
     public TextField nameText;
@@ -40,13 +43,13 @@ public class RegisterController implements Initializable {
     public TextField streetText;
 
     /**
-     * Text field for entering fiscal code.
+     * Text field for entering the name of vaccination center.
      */
     @FXML
     public TextField cnameText;
 
     /**
-     * Text field for entering username.
+     * Text field for entering civic number.
      */
     @FXML
     public TextField ncText;
@@ -64,13 +67,13 @@ public class RegisterController implements Initializable {
     public TextField provinceText;
 
     /**
-     * Text field for entering region.
+     * Text field for entering cap.
      */
     @FXML
     public TextField capText;
 
     /**
-     * Button to register a new user.
+     * Button to register a new vaccination center.
      */
     @FXML
     public Button registrationButton;
@@ -81,6 +84,11 @@ public class RegisterController implements Initializable {
     @FXML
     public Button backButton;
 
+    /**
+     * choice box to select the type of vaccination center
+     */
+    @FXML
+    public ChoiceBox<String> checkType;
 
     /**
      * Label to display registration errors or successes.
@@ -93,6 +101,12 @@ public class RegisterController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        ObservableList<String> choices = FXCollections.observableArrayList();
+        choices.addAll("hub", "ospedaliero","aziendale");
+
+        checkType.setItems(choices);
+        checkType.getSelectionModel().selectFirst();
 
        /* validation = false;
         cfText.focusedProperty().addListener((arg0, oldValue, newValue) -> {
@@ -132,6 +146,7 @@ public class RegisterController implements Initializable {
         jsonobj.put("comune", cityText.getText().toString());
         jsonobj.put("provincia", provinceText.getText().toString());
         jsonobj.put("cap", capText.getText().toString());
+        jsonobj.put("tipologia", checkType.getValue().toString());
 
         try {
             CompletableFuture<JSONArray> json = s

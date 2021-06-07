@@ -41,12 +41,6 @@ public class HomeController implements Initializable {
     ServerJSONHandler s;
 
     @FXML
-    private TextField nameSearchText;
-
-    @FXML
-    private TextField citySearchText;
-
-    @FXML
     private ListView<String> vaccineCenterList;
 
     @FXML
@@ -56,20 +50,11 @@ public class HomeController implements Initializable {
     private Label nameLabel2, typeLabel, addressLabel;
 
     @FXML
-    private ChoiceBox<String> checkType;
-
-    @FXML
     private Button regButton;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        //static ui elements
-        ObservableList<String> choices = FXCollections.observableArrayList();
-        choices.addAll("hub", "ospedaliero","aziendale");
-
-        checkType.setItems(choices);
-        checkType.getSelectionModel().selectFirst();
 
         //dynamic ui elements
 
