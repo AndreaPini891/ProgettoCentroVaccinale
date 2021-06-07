@@ -1,4 +1,4 @@
-package cittadini.web;
+package centrivaccinali.web;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 /**
  * The type Server json handler test.

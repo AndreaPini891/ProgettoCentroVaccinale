@@ -11,10 +11,12 @@ module cittadini {
     requires org.json;
     requires java.net.http;
 
-    opens cittadini to javafx.fxml;
-    opens cittadini.controllers to javafx.fxml;
+    opens centrivaccinali to javafx.fxml;
+    opens centrivaccinali.controllers to javafx.fxml;
 
-    exports cittadini;
-    exports cittadini.controllers;
-    exports cittadini.web;
+    exports centrivaccinali;
+    exports centrivaccinali.controllers;
+    exports centrivaccinali.web;
+    exports centrivaccinali.models;
+    opens centrivaccinali.models to javafx.fxml;
 }

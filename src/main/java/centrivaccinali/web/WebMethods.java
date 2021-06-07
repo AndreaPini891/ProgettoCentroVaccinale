@@ -1,4 +1,4 @@
-package cittadini.web;
+package centrivaccinali.web;
 
 /**
  * The enum Web methods.

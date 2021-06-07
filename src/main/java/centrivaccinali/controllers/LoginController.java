@@ -1,4 +1,4 @@
-package cittadini.controllers;
+package centrivaccinali.controllers;
 
 /**
  * Login controller for the Login view.
@@ -10,9 +10,9 @@ package cittadini.controllers;
  *
  */
 
-import cittadini.web.ServerJSONHandler;
-import cittadini.web.ServerStatusException;
-import cittadini.web.WebMethods;
+import centrivaccinali.web.ServerJSONHandler;
+import centrivaccinali.web.ServerStatusException;
+import centrivaccinali.web.WebMethods;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;

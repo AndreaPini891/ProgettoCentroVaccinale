@@ -1,4 +1,4 @@
-package cittadini.web;
+package centrivaccinali.web;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;

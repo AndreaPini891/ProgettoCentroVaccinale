@@ -1,14 +1,13 @@
-package cittadini;
+package centrivaccinali;
 
-import cittadini.controllers.LoginController;
-import cittadini.controllers.RegisterController;
-import cittadini.web.ServerJSONHandler;
+import centrivaccinali.controllers.LoginController;
+import centrivaccinali.controllers.RegisterController;
+import centrivaccinali.web.ServerJSONHandler;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 

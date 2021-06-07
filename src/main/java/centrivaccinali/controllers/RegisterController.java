@@ -1,4 +1,4 @@
-package cittadini.controllers;
+package centrivaccinali.controllers;
 /**
  *       AUTORI - COMO:
  *       Samuele Barella - mat.740688
@@ -6,8 +6,8 @@ package cittadini.controllers;
  *       Andrea Pini - mat.740675
  */
 
-import cittadini.web.ServerJSONHandler;
-import cittadini.web.WebMethods;
+import centrivaccinali.web.ServerJSONHandler;
+import centrivaccinali.web.WebMethods;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -34,46 +34,22 @@ public class RegisterController implements Initializable {
     public TextField nameText;
 
     /**
-     * Text field for entering surname.
+     * Text field for entering street.
      */
     @FXML
-    public TextField surnameText;
+    public TextField streetText;
 
     /**
      * Text field for entering fiscal code.
      */
     @FXML
-    public TextField cfText;
+    public TextField cnameText;
 
     /**
      * Text field for entering username.
      */
     @FXML
-    public TextField usernameText;
-
-    /**
-     * Text field for entering password.
-     */
-    @FXML
-    public TextField passwordText;
-
-    /**
-     * Text field for entering nation.
-     */
-    @FXML
-    public TextField nationText;
-
-    /**
-     * Text field for entering region.
-     */
-    @FXML
-    public TextField regionText;
-
-    /**
-     * Text field for entering province.
-     */
-    @FXML
-    public TextField provinceText;
+    public TextField ncText;
 
     /**
      * Text field for entering city.
@@ -82,10 +58,16 @@ public class RegisterController implements Initializable {
     public TextField cityText;
 
     /**
-     * Text field for entering street.
+     * Text field for entering province.
      */
     @FXML
-    public TextField streetText;
+    public TextField provinceText;
+
+    /**
+     * Text field for entering region.
+     */
+    @FXML
+    public TextField capText;
 
     /**
      * Button to register a new user.
@@ -99,6 +81,7 @@ public class RegisterController implements Initializable {
     @FXML
     public Button backButton;
 
+
     /**
      * Label to display registration errors or successes.
      */
@@ -111,7 +94,7 @@ public class RegisterController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        validation = false;
+       /* validation = false;
         cfText.focusedProperty().addListener((arg0, oldValue, newValue) -> {
             if (!newValue) { //when focus lost
                 if(!cfText.getText().matches("(?:[A-Z][AEIOU][AEIOUX]|[B-DF-HJ-NP-TV-Z]{2}[A-Z]){2}(?:[\\dLMNP-V]{2}(?:[A-EHLMPR-T](?:[04LQ][1-9MNP-V]|[15MR][\\dLMNP-V]|[26NS][0-8LMNP-U])|[DHPS][37PT][0L]|[ACELMRT][37PT][01LM]|[AC-EHLMPR-T][26NS][9V])|(?:[02468LNQSU][048LQU]|[13579MPRTV][26NS])B[26NS][9V])(?:[A-MZ][1-9MNP-V][\\dLMNP-V]{2}|[A-M][0L](?:[1-9MNP-V][\\dLMNP-V]|[0L][1-9MNP-V]))[A-Z]$")){
@@ -123,7 +106,7 @@ public class RegisterController implements Initializable {
                 }
             }
 
-        });
+        }); */
     }
 
 
@@ -143,15 +126,12 @@ public class RegisterController implements Initializable {
         JSONObject jsonobj = new JSONObject();
 
         jsonobj.put("nome", nameText.getText().toString());
-        jsonobj.put("cognome", surnameText.getText().toString());
-        jsonobj.put("codiceFiscale", cfText.getText().toString());
-        jsonobj.put("userName", usernameText.getText().toString());
-        jsonobj.put("pass", passwordText.getText().toString());
-        jsonobj.put("nazione", nationText.getText().toString());
-        jsonobj.put("regione", regionText.getText().toString());
-        jsonobj.put("provincia", provinceText.getText().toString());
-        jsonobj.put("comune", cityText.getText().toString());
         jsonobj.put("via", streetText.getText().toString());
+        jsonobj.put("provincia", cnameText.getText().toString());
+        jsonobj.put("cognome", ncText.getText().toString());
+        jsonobj.put("comune", cityText.getText().toString());
+        jsonobj.put("codiceFiscale", provinceText.getText().toString());
+        jsonobj.put("userName", capText.getText().toString());
 
         try {
             CompletableFuture<JSONArray> json = s
