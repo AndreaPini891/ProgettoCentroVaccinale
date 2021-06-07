@@ -127,11 +127,11 @@ public class RegisterController implements Initializable {
 
         jsonobj.put("nome", nameText.getText().toString());
         jsonobj.put("via", streetText.getText().toString());
-        jsonobj.put("provincia", cnameText.getText().toString());
-        jsonobj.put("cognome", ncText.getText().toString());
+        jsonobj.put("nomecentro", cnameText.getText().toString());
+        jsonobj.put("numeroCivico", ncText.getText().toString());
         jsonobj.put("comune", cityText.getText().toString());
-        jsonobj.put("codiceFiscale", provinceText.getText().toString());
-        jsonobj.put("userName", capText.getText().toString());
+        jsonobj.put("provincia", provinceText.getText().toString());
+        jsonobj.put("cap", capText.getText().toString());
 
         try {
             CompletableFuture<JSONArray> json = s
