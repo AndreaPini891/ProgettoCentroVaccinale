@@ -40,6 +40,6 @@
          <font>
             <Font name="System Bold" size="15.0" />
          </font></Button>
-      <Button fx:id="registerButton" layoutX="432.0" layoutY="248.0" mnemonicParsing="false" prefHeight="10.0" prefWidth="80.0" text="Registrati" />
+      <Button fx:id="registerButton" layoutX="429.0" layoutY="248.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="87.0" text="Registrati" />
    </children>
 </AnchorPane>
