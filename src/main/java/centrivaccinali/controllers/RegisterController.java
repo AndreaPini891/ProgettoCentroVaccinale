@@ -1,5 +1,5 @@
 package centrivaccinali.controllers;
-/**
+/*
  *       AUTORI - COMO:
  *       Samuele Barella - mat.740688
  *       Lorenzo Pengue - mat.740727
@@ -8,14 +8,16 @@ package centrivaccinali.controllers;
 
 import centrivaccinali.web.ServerJSONHandler;
 import centrivaccinali.web.WebMethods;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.Cursor;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -31,10 +33,29 @@ public class RegisterController implements Initializable {
 
 
     /**
-     * Text field for entering the name of vaccination center.
+     * Text field for entering the name of vthe user.
      */
     @FXML
     public TextField nameText;
+
+    /**
+     * Text field for entering the surname of the user.
+     */
+    @FXML
+    public TextField surnameText;
+
+
+    /**
+     * Text field for entering the username of the user.
+     */
+    @FXML
+    public TextField usernameText;
+
+    /**
+     * Text field for entering the password of the user.
+     */
+    @FXML
+    public PasswordField passwordText;
 
     /**
      * Text field for entering street.
@@ -67,10 +88,10 @@ public class RegisterController implements Initializable {
     public TextField provinceText;
 
     /**
-     * Text field for entering cap.
+     * Text field for entering region.
      */
     @FXML
-    public TextField capText;
+    public TextField regionText;
 
     /**
      * Button to register a new vaccination center.
@@ -96,7 +117,7 @@ public class RegisterController implements Initializable {
     @FXML
     public Label error;
 
-    private boolean validation;
+    private final int PROVINCE_LIMIT = 2;
 
 
     @Override
@@ -108,19 +129,20 @@ public class RegisterController implements Initializable {
         checkType.setItems(choices);
         checkType.getSelectionModel().selectFirst();
 
-       /* validation = false;
-        cfText.focusedProperty().addListener((arg0, oldValue, newValue) -> {
-            if (!newValue) { //when focus lost
-                if(!cfText.getText().matches("(?:[A-Z][AEIOU][AEIOUX]|[B-DF-HJ-NP-TV-Z]{2}[A-Z]){2}(?:[\\dLMNP-V]{2}(?:[A-EHLMPR-T](?:[04LQ][1-9MNP-V]|[15MR][\\dLMNP-V]|[26NS][0-8LMNP-U])|[DHPS][37PT][0L]|[ACELMRT][37PT][01LM]|[AC-EHLMPR-T][26NS][9V])|(?:[02468LNQSU][048LQU]|[13579MPRTV][26NS])B[26NS][9V])(?:[A-MZ][1-9MNP-V][\\dLMNP-V]{2}|[A-M][0L](?:[1-9MNP-V][\\dLMNP-V]|[0L][1-9MNP-V]))[A-Z]$")){
-                    cfText.setStyle("-fx-border-color: red ; -fx-border-width: 2px ;");
-                    validation = false;
-                } else {
-                    cfText.setStyle("-fx-border-color: none ; -fx-border-width: none ;");
-                    validation = true;
+        provinceText.lengthProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.intValue() > oldValue.intValue()) {
+                // Check if the new character is greater than LIMIT
+                if (provinceText.getText().length() >= PROVINCE_LIMIT) {
+
+                    // if it's 11th character then just setText to previous
+                    // one
+                    provinceText.setText(provinceText.getText().substring(0, PROVINCE_LIMIT));
                 }
             }
+        });
 
-        }); */
+        cnameText.addEventFilter(KeyEvent.KEY_TYPED , letter_Validation(25));
+
     }
 
 
@@ -134,32 +156,32 @@ public class RegisterController implements Initializable {
 
         boolean returnVal = false;
 
-        if(!validation)
-            return false;
-
         JSONObject jsonobj = new JSONObject();
 
-        jsonobj.put("nome", nameText.getText().toString());
-        jsonobj.put("via", streetText.getText().toString());
-        jsonobj.put("nomecentro", cnameText.getText().toString());
-        jsonobj.put("numeroCivico", ncText.getText().toString());
-        jsonobj.put("comune", cityText.getText().toString());
-        jsonobj.put("provincia", provinceText.getText().toString());
-        jsonobj.put("cap", capText.getText().toString());
-        jsonobj.put("tipologia", checkType.getValue().toString());
+        jsonobj.put("nome", nameText.getText());
+        jsonobj.put("cognome", surnameText.getText());
+        jsonobj.put("userName", usernameText.getText());
+        jsonobj.put("pass", passwordText.getText());
+
+        jsonobj.put("nomeCentro", cnameText.getText());
+
+        jsonobj.put("nazione", "ITALIA");
+        jsonobj.put("regione", regionText.getText());
+        jsonobj.put("provincia", provinceText.getText());
+        jsonobj.put("comune", cityText.getText());
+        jsonobj.put("via", streetText.getText() + " " + ncText.getText());
+        jsonobj.put("tipologiaCentro", checkType.getValue());
 
         try {
             CompletableFuture<JSONArray> json = s
                     .setMethod(WebMethods.POST)
-                    .setEndpoint("rpc/signup_cittadino")
+                    .setEndpoint("rpc/signup_admin_centro")
                     .setData(jsonobj)
                     .makeRequest();
 
             json.join();
 
-            if(s.getResponseCode() == 200)
-                returnVal = true;
-            else returnVal = false;
+            returnVal = s.getResponseCode() == 200;
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -168,4 +190,22 @@ public class RegisterController implements Initializable {
 
     }
 
+    /* Letters Validation Limit the  characters to maxLengh AND to ONLY Letters *************************************/
+    public EventHandler<KeyEvent> letter_Validation(final Integer max_Lengh) {
+        return e -> {
+            TextField txt_TextField = (TextField) e.getSource();
+            if (txt_TextField.getText().length() >= max_Lengh) {
+                e.consume();
+            }
+            if(!e.getCharacter().matches("[A-Za-z0-9_]")){
+                e.consume();
+            }
+            if(e.getCharacter().matches("[ ]")){
+                e.consume();
+                int i = txt_TextField.getCaretPosition();
+                txt_TextField.setText(txt_TextField.getText().substring(0, i) + '_' + txt_TextField.getText().substring(i));
+                txt_TextField.positionCaret(i+1);
+            }
+        };
+    }
 }

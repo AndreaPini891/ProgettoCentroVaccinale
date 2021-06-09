@@ -1,22 +1,33 @@
 package centrivaccinali.controllers;
 
+import centrivaccinali.App;
+import centrivaccinali.models.*;
 import centrivaccinali.web.ServerJSONHandler;
 import centrivaccinali.web.WebMethods;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Home controller for the "home" view.
@@ -27,13 +38,6 @@ import java.util.concurrent.CompletableFuture;
  * @author Andrea Pini - mat.740675
  */
 public class HomeController implements Initializable {
-    private int centerID;
-
-    private String name;
-    private String surname;
-    private String cf;
-
-    private JSONObject selectedCentre;
 
     /**
      * Server connector
@@ -41,181 +45,303 @@ public class HomeController implements Initializable {
     ServerJSONHandler s;
 
     @FXML
-    private ListView<String> vaccineCenterList;
+    private ListView<VaccinazioneModel> vaccinationList;
+    @FXML
+    private ListView<EventoAvversoModel> eventsList;
+    @FXML
+    private ListView<CittadinoModel> citizensList;
 
     @FXML
-    private Label nameLabel, surnameLabel, cfLabel;
+    private Label nameLabel, surnameLabel, centerLabel;
 
     @FXML
-    private Label nameLabel2, typeLabel, addressLabel;
+    private Label centerNameLabel, typeLabel, addressLabel, eventsLabel, avgEventLabel;
 
     @FXML
-    private Button regButton;
+    private Label citizenNameLabel, citizenSurnameLabel, cfLabel, invalidCFLabel;
+
+    @FXML
+    private Button regButton, searchCitizenButton;
+
+    @FXML
+    private TextField searchCitizenText;
+
+    AdminCentroModel adminCentroModel;
+    CentroVaccinaleModel currentCenter;
+    CittadinoModel currentCitizen;
+
+    /**
+     * the observable lists for ListViews
+     */
+    ObservableList<VaccinazioneModel> vaccinationsObservable = FXCollections.observableArrayList();
+    ObservableList<EventoAvversoModel> eventsObservable = FXCollections.observableArrayList();
+    ObservableList<CittadinoModel> citizensObservable = FXCollections.observableArrayList();
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        setupDynamicElements();
 
+    }
+
+    private void setupDynamicElements(){
         //dynamic ui elements
 
         s = new ServerJSONHandler();
 
-        CompletableFuture<JSONArray> centersJson = null;
+        compileUI();
+
+        addressLabel.setText(currentCenter.indirizzo.toString());
+        new Thread(() -> {
+            CompletableFuture<JSONArray> jsonStats = null;
+            try {
+                jsonStats = s
+                        .setEndpoint("EventiAvversi?idCentro=eq."+ currentCenter.idCentro)
+                        .setMethod(WebMethods.GET)
+                        .setData(new JSONObject())
+                        .makeRequest();
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            assert jsonStats != null;
+            JSONArray j = jsonStats.join();
+
+            Platform.runLater(() -> {
+
+                eventsLabel.setText(String.valueOf(j.length()));
+                float avg = 0;
+                for(int k = 0; k < j.length(); k++)
+                    avg += j.getJSONObject(k).getInt("gravita");
+                avg = avg / j.length();
+                avgEventLabel.setText(String.valueOf(avg));
+
+            });
+        }).start();
+
+        searchCitizenButton.setOnAction(event -> searchCitizen());
+
+        regButton.setOnAction(event -> registerVaccination());
+
+        //aggiorno le liste ogni 60 sec
+        ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+        exec.scheduleAtFixedRate(new Thread(this::fillRegisteredList), 0, 60, TimeUnit.SECONDS);
+        exec.scheduleAtFixedRate(new Thread(this::fillEventsList), 0, 60, TimeUnit.SECONDS);
+
+    }
+
+    /** builds dynamic elements **/
+    private void compileUI(){
+        citizensList.setItems(citizensObservable);
+        vaccinationList.setItems(vaccinationsObservable);
+        eventsList.setItems(eventsObservable);
+
+        CompletableFuture<JSONArray> adminJson = null;
         try {
-            centersJson = s.setEndpoint("CentriVaccinali").setMethod(WebMethods.GET).makeRequest();
+            adminJson = s.setEndpoint("AdminCentro").setMethod(WebMethods.GET).makeRequest();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
-        //observable list di stringhe perchè i nomi dei centri vaccinali sono univoci nel database, quindi è uno spreco inserire dei modelli di centro vaccinale
+        assert adminJson != null;
+        JSONArray adminJsonArray = adminJson.join();
 
-        ObservableList<String> obs = FXCollections.observableArrayList();
-        vaccineCenterList.setItems(obs);
+        if (adminJsonArray.length() > 0) {
+            adminCentroModel = new AdminCentroModel(adminJsonArray.getJSONObject(0));
 
-        assert centersJson != null;
-        JSONArray centersJsonArray = centersJson.join();
+            nameLabel.setText(adminCentroModel.nome);
+            surnameLabel.setText(adminCentroModel.cognome);
+            centerLabel.setText(adminCentroModel.nomeCentro);
 
-        CompletableFuture<JSONArray> addressesJson = null;
-        StringBuilder endpointBuilder = new StringBuilder("Indirizzi?or=(");
-
-        for(int i = 0; i < centersJsonArray.length(); i++) {
-            endpointBuilder.append("idIndirizzo.eq.").append(centersJsonArray.getJSONObject(i).getInt("idIndirizzo"));
-            if(!(i == centersJsonArray.length()-1))
-                endpointBuilder.append(",");
         }
-        endpointBuilder.append(")");
 
-        String endpoint = endpointBuilder.toString();
-        System.out.println(endpoint);
+        CompletableFuture<JSONArray> centerJson;
+        CompletableFuture<JSONArray> addressJson = null;
         try {
-            addressesJson = s.setEndpoint(endpoint).setMethod(WebMethods.GET).makeRequest();
+            centerJson = s.setEndpoint("CentriVaccinali?nomeCentro=eq."+adminCentroModel.nomeCentro).setMethod(WebMethods.GET).makeRequest();
+
+            assert centerJson != null;
+            if(!centerJson.join().isEmpty())
+                currentCenter = new CentroVaccinaleModel(centerJson.join().getJSONObject(0));
+
+            addressJson = s.setEndpoint("Indirizzi?idIndirizzo=eq."+currentCenter.idIndirizzo).setMethod(WebMethods.GET).makeRequest();
+
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+        assert addressJson != null;
+        if(!addressJson.join().isEmpty())
+            currentCenter.setAddress(new IndirizzoModel(addressJson.join().getJSONObject(0)));
 
-        fillCentersList(obs, centersJsonArray, "");
+        centerNameLabel.setText(currentCenter.nomeCentro);
+        typeLabel.setText(currentCenter.tipologiaCentro);
+    }
 
-        CompletableFuture<JSONArray> citizenJson = null;
-        try {
-            citizenJson = s.setEndpoint("Cittadini").makeRequest();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+    /** listeners **/
+    private void searchCitizen(){
+        String cfString = searchCitizenText.getText();
 
-        assert citizenJson != null;
-        JSONArray citizenJsonArray = citizenJson.join();
+        new Thread(()-> {
 
-        if(citizenJson != null && citizenJsonArray.length() > 0) {
-            JSONObject o = citizenJsonArray.getJSONObject(0);
+            CompletableFuture<JSONArray> citizenJson = null;
+            try {
+                citizenJson = s.setEndpoint("Cittadini?codiceFiscale=fts."+cfString).setMethod(WebMethods.GET).makeRequest();
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
 
-            nameLabel.setText(o.getString("nome"));
-            surnameLabel.setText(o.getString("cognome"));
-            cfLabel.setText(o.getString("codiceFiscale"));
+            assert citizenJson != null;
+            JSONArray citizen = citizenJson.join();
 
-        }
+            if(citizen.length() > 0){
+                currentCitizen = new CittadinoModel(citizen.getJSONObject(0));
+                invalidCFLabel.setVisible(false);
+                //previene problemi di Not on FX application thread
+                Platform.runLater(() -> {
 
+                    citizenNameLabel.setText(currentCitizen.nome);
+                    citizenSurnameLabel.setText(currentCitizen.cognome);
+                    cfLabel.setText(currentCitizen.codiceFiscale);
 
-        //  listener ricerca per nome
-
-        CompletableFuture<JSONArray> finalCentersJson = centersJson;
-        nameSearchText.textProperty().addListener((observable, oldValue, newValue) -> {
-            cercaCentroVaccinale(obs, finalCentersJson, null, newValue, true);
-        });
-
-        // listener ricerca per comune e tipologia
-
-        CompletableFuture<JSONArray> finalAddressesJson = addressesJson;
-        citySearchText.textProperty().addListener((observable, oldValue, newValue) -> {
-            cercaCentroVaccinale(obs, finalCentersJson, finalAddressesJson, newValue, false);
-        });
-
-
-        //listener su listview
-
-        vaccineCenterList.getSelectionModel().selectedItemProperty()
-                .addListener(new ChangeListener<String>() {
-                    public void changed(ObservableValue<? extends String> observable,
-                                        String oldValue, String newValue) {
-                        System.out.println("selection changed " + newValue);
-                        JSONArray centreList = finalCentersJson.join();
-                        JSONArray addressesList = finalAddressesJson.join();
-                        for (int i = 0; i < centreList.length(); i++){
-                            if (centreList.getJSONObject(i).getString("nomeCentro").toLowerCase(Locale.ROOT).equals(newValue.toLowerCase(Locale.ROOT))) {
-                                selectedCentre = centreList.getJSONObject(i);
-
-                                for (int j = 0; j < addressesList.length(); j++)
-                                    if(selectedCentre.getInt("idIndirizzo") == addressesList.getJSONObject(j).getInt("idIndirizzo"))
-                                        selectedCentre.put("jsonIndirizzo", addressesList.getJSONObject(j));
-
-                                nameLabel2.setText(selectedCentre.getString("nomeCentro"));
-                                typeLabel.setText(selectedCentre.getString("tipologiaCentro"));
-
-                                addressLabel.setText(selectedCentre.getJSONObject("jsonIndirizzo").getString("regione") + ", " +
-                                        selectedCentre.getJSONObject("jsonIndirizzo").getString("provincia") + ", " +
-                                        selectedCentre.getJSONObject("jsonIndirizzo").getString("comune") + ", " +
-                                        selectedCentre.getJSONObject("jsonIndirizzo").getString("via"));
-                            }
-                        }
-                    }
+                    regButton.setVisible(true);
                 });
-    }
 
-    private void cercaCentroVaccinale(ObservableList<String> obs,
-                                      CompletableFuture<JSONArray> futureJson,
-                                      CompletableFuture<JSONArray> addressesJson,
-                                      String filter,
-                                      boolean nameOrCity)
-    {
-        JSONArray centersJson = futureJson.join();
-        if(nameOrCity) {
+                fillVaccinationsList();
 
-            vaccineCenterList.getItems().clear();
-            fillCentersList(obs, centersJson, filter);
-        }
-        else
-        {
-
-            JSONArray addressesArray = addressesJson.join();
-
-            vaccineCenterList.getItems().clear();
-            String tipologia = checkType.getValue();
-            JSONArray filteredCentersJson = new JSONArray();
-            JSONArray finalCentersJson = new JSONArray();
-
-            //filtro per tipologia
-            for (int i = 0; i < centersJson.length(); i++)
-                if(centersJson.getJSONObject(i).getString("tipologiaCentro").toLowerCase(Locale.ROOT).equals(tipologia.toLowerCase()))
-                    filteredCentersJson.put(centersJson.getJSONObject(i));
-
-            //filtro per comune
-            for (int i = 0; i < filteredCentersJson.length(); i++){
-                int idIndirizzo = centersJson.getJSONObject(i).getInt("idIndirizzo");
-                for (int j = 0; j < addressesArray.length(); j++){
-                    if(addressesArray.getJSONObject(j).getInt("idIndirizzo") == idIndirizzo)
-                        if(addressesArray.getJSONObject(j).getString("comune")
-                                .toLowerCase(Locale.ROOT)
-                                .contains(filter.toLowerCase(Locale.ROOT)))
-                            finalCentersJson.put(centersJson.getJSONObject(i));
-                }
+            } else{
+                invalidCFLabel.setVisible(true);
+                regButton.setVisible(false);
             }
 
-            fillCentersList(obs, finalCentersJson, "");
-        }
+
+        }).start();
+
     }
 
-    private void fillCentersList( ObservableList<String> obs, JSONArray centersJson, String filter)
-    {
-        obs.removeAll();
-        if(centersJson != null && centersJson.length() > 0){
-            for(int i = 0; i < centersJson.length(); i++){
-                JSONObject tmp = centersJson.getJSONObject(i);
-                if(filter.length() == 0)
-                    obs.add(tmp.getString("nomeCentro"));
-                else {
-                    if (tmp.getString("nomeCentro").toLowerCase(Locale.ROOT).contains(filter.toLowerCase(Locale.ROOT)))
-                        obs.add(tmp.getString("nomeCentro"));
-                }
-            }
+    private void registerVaccination(){
+
+        Stage dialog = new Stage();
+        Parent root = null;
+        FXMLLoader loader = new FXMLLoader(App.class.getResource( "dialog.fxml" ));
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+        DialogController d = loader.getController();
+        d.idCittadino = currentCitizen.idCittadino;
+        d.nomeCentro = currentCenter.nomeCentro;
+        d.setDescriptionText(currentCitizen.codiceFiscale);
+
+        assert root != null;
+        dialog.setScene(new Scene(root));
+        dialog.initOwner(regButton.getContextMenu());
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.showAndWait();
+        fillVaccinationsList();
+    }
+
+    /** utils **/
+    private void fillVaccinationsList(){
+        new Thread(() -> {
+            CompletableFuture<JSONArray> j = null;
+            try {
+                j = s.setMethod(WebMethods.GET).setEndpoint("Vaccinati_"+currentCenter.nomeCentro+"?idCittadino=eq."+currentCitizen.idCittadino).makeRequest();
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+            assert j != null;
+            JSONArray jsonArray = j.join();
+
+            //previene problemi di Not on FX application thread
+            Platform.runLater(() -> {
+                vaccinationsObservable.clear();
+
+                if(jsonArray != null && jsonArray.length() > 0){
+                    for(int i = 0; i < jsonArray.length(); i++){
+                        JSONObject json = jsonArray.getJSONObject(i);
+                        VaccinazioneModel tmp = new VaccinazioneModel(json);
+                        vaccinationsObservable.add(tmp);
+                    }
+                }
+            });
+
+        }).start();
+    }
+
+    private void fillRegisteredList(){
+        new Thread(() -> {
+            CompletableFuture<JSONArray> j = null;
+            try {
+                j = s.setMethod(WebMethods.GET).setEndpoint("RegistrazioniCentriVaccinali?idCentro=eq."+currentCenter.idCentro).makeRequest();
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+            assert j != null;
+            JSONArray jsonArray = j.join();
+
+            StringBuilder endpointBuilder = new StringBuilder();
+            endpointBuilder.append("Cittadini?or=(");
+
+            for(int i = 0; i < jsonArray.length(); i++){
+                endpointBuilder.append("idCittadino.eq.").append(jsonArray.getJSONObject(i).getInt("idCittadino"));
+                if(!(i == jsonArray.length()-1))
+                    endpointBuilder.append(",");
+            }
+
+            endpointBuilder.append(")");
+
+            CompletableFuture<JSONArray> citizensJson = null;
+            try {
+                citizensJson = s.setMethod(WebMethods.GET).setEndpoint(endpointBuilder.toString()).makeRequest();
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+            assert citizensJson != null;
+            JSONArray citizensArray = citizensJson.join();
+
+            //previene problemi di Not on FX application thread
+            Platform.runLater(() -> {
+                citizensObservable.clear();
+
+                if(citizensArray != null && citizensArray.length() > 0){
+                    for(int i = 0; i < citizensArray.length(); i++){
+                        JSONObject json = citizensArray.getJSONObject(i);
+                        CittadinoModel tmp = new CittadinoModel(json);
+                        citizensObservable.add(tmp);
+                    }
+                }
+            });
+
+        }).start();
+    }
+
+    private void fillEventsList(){
+        new Thread(() -> {
+            CompletableFuture<JSONArray> j = null;
+            try {
+                j = s.setMethod(WebMethods.GET).setEndpoint("EventiAvversi?idCentro=eq."+currentCenter.idCentro).makeRequest();
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+            assert j != null;
+            JSONArray jsonArray = j.join();
+
+            //previene problemi di Not on FX application thread
+            Platform.runLater(() -> {
+                eventsObservable.clear();
+
+                if(jsonArray != null && jsonArray.length() > 0){
+                    for(int i = 0; i < jsonArray.length(); i++){
+                        JSONObject json = jsonArray.getJSONObject(i);
+                        EventoAvversoModel tmp = new EventoAvversoModel(json);
+                        eventsObservable.add(tmp);
+                    }
+                }
+            });
+
+        }).start();
     }
 }

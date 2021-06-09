@@ -1,17 +1,15 @@
 package centrivaccinali.web;
 
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
 
 /**
  * This class creates an object tasked with communicating with the server.
@@ -37,7 +35,6 @@ public class ServerJSONHandler {
     /**
      * Response parameters
      */
-    private CompletableFuture<JSONObject> response;
     private Integer responseCode;
 
     /**
@@ -87,7 +84,8 @@ public class ServerJSONHandler {
      * @param jwt the json web token
      * @return the server json handler
      */
-    public ServerJSONHandler setJWT(String jwt){this.jwt = jwt;  return this;}
+    public ServerJSONHandler setJWT(String jwt){
+        ServerJSONHandler.jwt = jwt;  return this;}
 
     /**
      * Set data server json handler.
@@ -104,35 +102,32 @@ public class ServerJSONHandler {
      */
     public CompletableFuture<JSONArray> makeRequest() throws IOException, InterruptedException {
 
-        return CompletableFuture.supplyAsync(new Supplier<JSONArray>() {
-            @Override
-            public JSONArray get() {
-                url = URI.create(baseUrl + endpoint);
+        return CompletableFuture.supplyAsync(() -> {
+            url = URI.create(baseUrl + endpoint);
 
-                var request = HttpRequest.newBuilder()
-                        .uri(url)
-                        .header("Content-Type", "application/json");
+            var request = HttpRequest.newBuilder()
+                    .uri(url)
+                    .header("Content-Type", "application/json");
 
-                if(jwt != null)
-                    request.header("Authorization", "Bearer "+jwt);
+            if(jwt != null)
+                request.header("Authorization", "Bearer "+jwt);
 
-                HttpRequest.BodyPublisher p = HttpRequest.BodyPublishers.ofString(data.toString());
-                request.method(method.name(), p);
+            HttpRequest.BodyPublisher p = HttpRequest.BodyPublishers.ofString(data.toString());
+            request.method(method.name(), p);
 
-                var client = HttpClient.newHttpClient();
-                try {
-                    HttpResponse<String> t = client.send(request.build(), HttpResponse.BodyHandlers.ofString());
+            var client = HttpClient.newHttpClient();
+            try {
+                HttpResponse<String> t = client.send(request.build(), HttpResponse.BodyHandlers.ofString());
 
-                    responseCode = t.statusCode();
+                responseCode = t.statusCode();
 
-                    if(t.statusCode() != 200)
-                        throw new ServerStatusException(t.statusCode() + " on " + endpoint);
-                    return new JSONArray(t.body());
+                if(t.statusCode() != 200 && t.statusCode() != 201 )
+                    throw new ServerStatusException(t.statusCode() + " on " + endpoint);
+                return new JSONArray(t.body().isEmpty() ? "[]" : t.body());
 
-                } catch (IOException | InterruptedException | ServerStatusException | JSONException e) {
-                    e.printStackTrace();
-                    return new JSONArray("[{}]");
-                }
+            } catch (IOException | InterruptedException | ServerStatusException | JSONException e) {
+                e.printStackTrace();
+                return new JSONArray("[]");
             }
         });
     }

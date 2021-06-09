@@ -4,8 +4,6 @@ import centrivaccinali.controllers.LoginController;
 import centrivaccinali.controllers.RegisterController;
 import centrivaccinali.web.ServerJSONHandler;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
@@ -37,60 +35,48 @@ public class App extends Application {
         FXMLLoader registerLoader = loadFXML("register");
 
         loginScene = new Scene(loginLoader.load(), 570, 400);
-        registerScene = new Scene(registerLoader.load(), 570, 400);
+        registerScene = new Scene(registerLoader.load(), 570, 555);
 
         stage.setScene(loginScene);
+        stage.setResizable(false);
 
         LoginController loginController = loginLoader.getController();
         RegisterController registerController = registerLoader.getController();
 
-        loginController.loginButton.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent event) {
-                String checkUser = loginController.usernameText.getText().toString();
-                String checkPassword = loginController.passwordText.getText().toString();
 
-                if(loginController.login(s, checkUser, checkPassword)){
-                    loginController.errorLabel.setText("Success");
-                    loginController.errorLabel.setTextFill(Color.GREEN);
+        loginController.loginButton.setOnAction(event -> {
+            String checkUser = loginController.usernameText.getText();
+            String checkPassword = loginController.passwordText.getText();
 
-                    try {
-                        FXMLLoader homeLoader = loadFXML("home");
-                        homeScene = new Scene(homeLoader.load(), 800, 600);
-                        stage.setScene(homeScene);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+            if(loginController.login(s, checkUser, checkPassword)){
+                loginController.errorLabel.setText("Success");
+                loginController.errorLabel.setTextFill(Color.GREEN);
+
+                try {
+                    FXMLLoader homeLoader = loadFXML("home");
+                    homeScene = new Scene(homeLoader.load(), 800, 600);
+                    stage.setScene(homeScene);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                else{
-                    loginController.errorLabel.setText("Incorrect user or password");
-                    loginController.errorLabel.setTextFill(Color.RED);
-                }
-                loginController.usernameText.setText("");
-                loginController.passwordText.setText("");
             }
+            else{
+                loginController.errorLabel.setText("Incorrect user or password");
+                loginController.errorLabel.setTextFill(Color.RED);
+            }
+            loginController.usernameText.setText("");
+            loginController.passwordText.setText("");
         });
 
-        loginController.registerButton.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent event) {
-                stage.setScene(registerScene);
-            }
-        });
+        loginController.registerButton.setOnAction(event -> stage.setScene(registerScene));
 
-        registerController.registrationButton.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent event) {
-                boolean res;
-                if(res = registerController.register(s)) {
-                    System.out.println(res);
-                    stage.setScene(loginScene);
-                }else registerController.error.setText("Error");
-            }
-        });
-
-        registerController.backButton.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent event) {
+        registerController.registrationButton.setOnAction(event -> {
+            if(registerController.register(s)) {
                 stage.setScene(loginScene);
-            }
+            }else registerController.error.setText("Error");
         });
+
+        registerController.backButton.setOnAction(event -> stage.setScene(loginScene));
 
         stage.show();
     }

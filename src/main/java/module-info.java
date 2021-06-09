@@ -10,6 +10,7 @@ module cittadini {
     requires javafx.fxml;
     requires org.json;
     requires java.net.http;
+    requires org.joda.time;
 
     opens centrivaccinali to javafx.fxml;
     opens centrivaccinali.controllers to javafx.fxml;
