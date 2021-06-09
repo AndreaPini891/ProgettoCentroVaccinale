@@ -46,7 +46,7 @@ class ServerJSONHandlerTest {
 
             CompletableFuture<JSONArray> json = s
                     .setMethod(WebMethods.POST)
-                    .setEndpoint("rpc/login_cittadino")
+                    .setEndpoint("rpc/login_admin_centro")
                     .setData(jsonobj)
                     .makeRequest();
 
