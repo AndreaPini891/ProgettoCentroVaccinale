@@ -44,25 +44,57 @@ public class HomeController implements Initializable {
      */
     ServerJSONHandler s;
 
+    /**
+     * the list of vaccinated citizens
+     */
     @FXML
     private ListView<VaccinazioneModel> vaccinationList;
+
+    /**
+     * the list of events regarding this centre
+     */
     @FXML
     private ListView<EventoAvversoModel> eventsList;
+
+    /**
+     * the list of registered citizens
+     */
     @FXML
     private ListView<CittadinoModel> citizensList;
 
+    /**
+     * the labels for the centre admin
+     */
     @FXML
     private Label nameLabel, surnameLabel, centerLabel;
 
+    /**
+     * the labels for the centre informations
+     */
     @FXML
     private Label centerNameLabel, typeLabel, addressLabel, eventsLabel, avgEventLabel;
 
+    /**
+     * the labels for the current selected citizen
+     */
     @FXML
     private Label citizenNameLabel, citizenSurnameLabel, cfLabel, invalidCFLabel;
 
+    /**
+     * the button to mark a citizen as vaccinated
+     */
     @FXML
-    private Button regButton, searchCitizenButton;
+    private Button regButton;
 
+    /**
+     * the button to select a citizen
+     */
+    @FXML
+    private Button searchCitizenButton;
+
+    /**
+     * the textfield to insert data about the queried citizen
+     */
     @FXML
     private TextField searchCitizenText;
 
@@ -85,6 +117,9 @@ public class HomeController implements Initializable {
 
     }
 
+    /**
+     * the function to setup dymanic elements that need remote data
+     */
     private void setupDynamicElements(){
         //dynamic ui elements
 
@@ -131,7 +166,9 @@ public class HomeController implements Initializable {
 
     }
 
-    /** builds dynamic elements **/
+    /**
+     * the function used to compile fetched data into the ui
+     */
     private void compileUI(){
         citizensList.setItems(citizensObservable);
         vaccinationList.setItems(vaccinationsObservable);
@@ -178,7 +215,10 @@ public class HomeController implements Initializable {
         typeLabel.setText(currentCenter.tipologiaCentro);
     }
 
-    /** listeners **/
+    /* listeners */
+    /**
+     * listener to the search button
+     */
     private void searchCitizen(){
         String cfString = searchCitizenText.getText();
 
@@ -219,6 +259,9 @@ public class HomeController implements Initializable {
 
     }
 
+    /**
+     * listener to the button to register a user as vaccinated
+     */
     private void registerVaccination(){
 
         Stage dialog = new Stage();
@@ -243,7 +286,11 @@ public class HomeController implements Initializable {
         fillVaccinationsList();
     }
 
-    /** utils **/
+    /* utils */
+
+    /**
+     * fills the vaccinations for the current citizen
+     */
     private void fillVaccinationsList(){
         new Thread(() -> {
             CompletableFuture<JSONArray> j = null;
@@ -271,6 +318,9 @@ public class HomeController implements Initializable {
         }).start();
     }
 
+    /**
+     * fills the registered citizens list
+     */
     private void fillRegisteredList(){
         new Thread(() -> {
             CompletableFuture<JSONArray> j = null;
@@ -318,6 +368,9 @@ public class HomeController implements Initializable {
         }).start();
     }
 
+    /**
+     * fills the events list
+     */
     private void fillEventsList(){
         new Thread(() -> {
             CompletableFuture<JSONArray> j = null;

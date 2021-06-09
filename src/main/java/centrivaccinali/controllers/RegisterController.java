@@ -114,6 +114,9 @@ public class RegisterController implements Initializable {
     @FXML
     public Label error;
 
+    /**
+     * the max amount of characters in province text box
+     */
     private final int PROVINCE_LIMIT = 2;
 
 
@@ -187,11 +190,15 @@ public class RegisterController implements Initializable {
 
     }
 
-    /* Letters Validation Limit the  characters to maxLengh AND to ONLY Letters *************************************/
-    public EventHandler<KeyEvent> letter_Validation(final Integer max_Lengh) {
+    /**
+     * function containing the filter for a text input
+     * @param len the max amount of chars in the text input
+     * @return the event handler
+     */
+    public EventHandler<KeyEvent> letter_Validation(final Integer len) {
         return e -> {
             TextField txt_TextField = (TextField) e.getSource();
-            if (txt_TextField.getText().length() >= max_Lengh) {
+            if (txt_TextField.getText().length() >= len) {
                 e.consume();
             }
             if(!e.getCharacter().matches("[A-Za-z0-9_]")){

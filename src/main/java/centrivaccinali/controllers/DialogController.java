@@ -16,14 +16,31 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Dialog controller for the dialog in the "home" view.
+ *
+ * @author SEDE COMO
+ * @author Samuele Barella - mat.740688
+ * @author Lorenzo Pengue - mat.740727
+ * @author Andrea Pini - mat.740675
+ */
 public class DialogController implements Initializable {
 
+    /**
+     * the description text field
+     */
     @FXML
     public TextField descriptionText;
 
+    /**
+     * the choice box for the vaccine type
+     */
     @FXML
     public ChoiceBox<String> vaccineSelect;
 
+    /**
+     * the buttons to confirm or cancel the vaccination
+     */
     @FXML
     public Button cancelButton, sendButton;
 
@@ -68,6 +85,10 @@ public class DialogController implements Initializable {
         });
     }
 
+    /**
+     * sets the description text
+     * @param text the description tex
+     */
     public void setDescriptionText(String text){
         descriptionText.setText(text);
     }

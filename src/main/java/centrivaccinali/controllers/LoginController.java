@@ -71,7 +71,7 @@ public class LoginController implements Initializable {
     /**
      * Login function that takes username and password for the authentication
      *
-     * @param s        the s = server connector
+     * @param s        the server connector
      * @param username the username
      * @param password the password
      * @return the boolean

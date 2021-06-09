@@ -5,19 +5,20 @@
  *       @author Andrea Pini - mat.740675
  */
 
-module cittadini {
+module centriVaccinali {
     requires javafx.controls;
     requires javafx.fxml;
     requires org.json;
     requires java.net.http;
     requires org.joda.time;
+    requires org.junit.jupiter.api;
 
     opens centrivaccinali to javafx.fxml;
     opens centrivaccinali.controllers to javafx.fxml;
+    opens centrivaccinali.models to javafx.fxml;
 
     exports centrivaccinali;
     exports centrivaccinali.controllers;
     exports centrivaccinali.web;
     exports centrivaccinali.models;
-    opens centrivaccinali.models to javafx.fxml;
 }
