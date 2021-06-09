@@ -12,10 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.json.JSONArray;
@@ -386,13 +383,35 @@ public class HomeController implements Initializable {
             Platform.runLater(() -> {
                 eventsObservable.clear();
 
-                if(jsonArray != null && jsonArray.length() > 0){
-                    for(int i = 0; i < jsonArray.length(); i++){
+                if (jsonArray != null && jsonArray.length() > 0) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject json = jsonArray.getJSONObject(i);
                         EventoAvversoModel tmp = new EventoAvversoModel(json);
                         eventsObservable.add(tmp);
                     }
                 }
+
+                eventsList.setCellFactory(cell -> new ListCell<>() {
+
+                    final Tooltip tooltip = new Tooltip();
+
+                    @Override
+                    protected void updateItem(EventoAvversoModel event, boolean empty) {
+                        super.updateItem(event, empty);
+
+                        if (event == null || empty) {
+                            setText(null);
+                            setTooltip(null);
+                        } else {
+                            // A book is to be listed in this cell
+                            setText(event.toString());
+
+                            // Let's show our Author when the user hovers the mouse cursor over this row
+                            tooltip.setText(event.note);
+                            setTooltip(tooltip);
+                        }
+                    }
+                });
             });
 
         }).start();
