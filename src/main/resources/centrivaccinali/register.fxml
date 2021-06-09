@@ -17,10 +17,6 @@
          <font>
             <Font name="System Bold" size="14.0" />
          </font></Text>
-      <Button fx:id="registrationButton" layoutX="323.0" layoutY="498.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="200.0" text="registra">
-         <font>
-            <Font name="System Bold" size="15.0" />
-         </font></Button>
       <ImageView fitHeight="52.0" fitWidth="56.0" layoutX="62.0" layoutY="14.0">
          <image>
             <Image url="@images/logo vaccino.PNG" />
@@ -38,41 +34,6 @@
             <Font size="14.0" />
          </font>
       </Label>
-      <ChoiceBox fx:id="checkType" layoutX="323.0" layoutY="455.0" prefHeight="25.0" prefWidth="200.0" />
-      <Pane layoutX="214.0" layoutY="257.0" prefHeight="188.0" prefWidth="321.0" style="-fx-background-color: lightgrey;">
-         <children>
-            <Text layoutX="16.0" layoutY="166.0" strokeType="OUTSIDE" strokeWidth="0.0" text="N°Civico" wrappingWidth="63.9775390625">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Text>
-            <Text layoutX="16.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Provincia">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Text>
-            <TextField fx:id="regionText" layoutX="107.0" layoutY="11.0" prefHeight="25.0" prefWidth="200.0" />
-            <TextField fx:id="provinceText" layoutX="107.0" layoutY="44.0" prefHeight="25.0" prefWidth="52.0" />
-            <TextField fx:id="cityText" layoutX="107.0" layoutY="79.0" prefWidth="200.0" />
-            <TextField fx:id="streetText" layoutX="107.0" layoutY="115.0" prefWidth="200.0" />
-            <TextField fx:id="ncText" layoutX="107.0" layoutY="149.0" prefWidth="200.0" />
-            <Text layoutX="18.0" layoutY="96.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Comune">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Text>
-            <Text layoutX="14.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Via/v.le/pzza" wrappingWidth="90.208984375">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Text>
-            <Label layoutX="15.0" layoutY="14.0" prefHeight="20.0" prefWidth="64.0" text="Regione">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Label>
-            <Label layoutX="167.0" layoutY="49.0" prefHeight="17.0" prefWidth="52.0" text="(Sigla)" />
-         </children></Pane>
       <Label layoutX="214.0" layoutY="229.0" prefHeight="21.0" prefWidth="76.0" text="Indirizzo">
          <font>
             <Font name="System Bold" size="15.0" />
@@ -107,5 +68,44 @@
             </Label>
          </children>
       </Pane>
+      <Pane layoutX="214.0" layoutY="257.0" prefHeight="188.0" prefWidth="321.0" style="-fx-background-color: lightgrey;">
+         <children>
+            <TextField fx:id="regionText" layoutX="107.0" layoutY="11.0" prefHeight="25.0" prefWidth="200.0" />
+            <TextField fx:id="provinceText" layoutX="107.0" layoutY="44.0" prefHeight="25.0" prefWidth="52.0" />
+            <TextField fx:id="cityText" layoutX="107.0" layoutY="79.0" prefWidth="200.0" />
+            <TextField fx:id="streetText" layoutX="107.0" layoutY="115.0" prefWidth="200.0" />
+            <TextField fx:id="ncText" layoutX="107.0" layoutY="149.0" prefWidth="200.0" />
+            <Text layoutX="16.0" layoutY="166.0" strokeType="OUTSIDE" strokeWidth="0.0" text="N°Civico" wrappingWidth="63.9775390625">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Text>
+            <Text layoutX="16.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Provincia">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Text>
+            <Text layoutX="18.0" layoutY="96.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Comune">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Text>
+            <Text layoutX="14.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Via/v.le/pzza" wrappingWidth="90.208984375">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Text>
+            <Label layoutX="15.0" layoutY="14.0" prefHeight="20.0" prefWidth="64.0" text="Regione">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Label layoutX="167.0" layoutY="49.0" prefHeight="17.0" prefWidth="52.0" text="(Sigla)" />
+         </children></Pane>
+      <ChoiceBox fx:id="checkType" layoutX="323.0" layoutY="455.0" prefHeight="25.0" prefWidth="200.0" />
+      <Button fx:id="registrationButton" layoutX="323.0" layoutY="498.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="200.0" text="registra">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font></Button>
    </children>
 </AnchorPane>

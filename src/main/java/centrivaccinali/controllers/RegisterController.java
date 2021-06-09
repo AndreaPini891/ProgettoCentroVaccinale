@@ -134,8 +134,6 @@ public class RegisterController implements Initializable {
                 // Check if the new character is greater than LIMIT
                 if (provinceText.getText().length() >= PROVINCE_LIMIT) {
 
-                    // if it's 11th character then just setText to previous
-                    // one
                     provinceText.setText(provinceText.getText().substring(0, PROVINCE_LIMIT));
                 }
             }
