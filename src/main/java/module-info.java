@@ -5,7 +5,7 @@
  *       @author Andrea Pini - mat.740675
  */
 
-module centriVaccinali {
+module centrivaccinali {
     requires javafx.controls;
     requires javafx.fxml;
     requires org.json;
