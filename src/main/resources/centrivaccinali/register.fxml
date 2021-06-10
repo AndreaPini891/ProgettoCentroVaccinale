@@ -6,7 +6,7 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="register" prefHeight="554.0" prefWidth="570.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="centrivaccinali.controllers.RegisterController">
+<AnchorPane fx:id="root" prefHeight="554.0" prefWidth="570.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="centrivaccinali.controllers.RegisterController">
    <children>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="554.0" stroke="BLACK" strokeType="INSIDE" width="191.0" />
       <Text layoutX="11.0" layoutY="90.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Registrazione">

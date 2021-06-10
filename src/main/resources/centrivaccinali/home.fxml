@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="610.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="centrivaccinali.controllers.HomeController">
+<AnchorPane fx:id="root" prefHeight="610.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="centrivaccinali.controllers.HomeController">
    <children>
       <Label layoutX="20.0" layoutY="14.0" text="Centro Vaccinale">
          <font>
